@@ -1,12 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { All, Body, Controller, Logger, Query } from '@nestjs/common'
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  private readonly logger = new Logger(AppController.name)
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @All('callback')
+  callback(@Query() query: any, @Body() body: any) {
+    this.logger.log(
+      `new callback received, query: ${JSON.stringify(query)}, body: ${JSON.stringify(body)}`,
+    )
+    return {}
   }
 }
