@@ -46,8 +46,7 @@ jobs:
         include:
           - arch: amd64
             runner: ubuntu-latest
-          - arch: arm64
-            runner: [self-hosted, linux, ARM64]
+
     steps:
       - name: Checkout Repositories
         uses: actions/checkout@v2
@@ -111,20 +110,3 @@ jobs:
               ref: 'refs/tags/v${{ needs.prepare.outputs.version }}',
               sha: context.sha
             })
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: cn-northwest-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Check and build manifest
-        run: sh ./script/push-manifest.sh
-        env:
-          VERSION: ${{ needs.prepare.outputs.version }}
-          IMAGE_NAME: ${{ needs.prepare.outputs.image }}

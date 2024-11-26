@@ -4,7 +4,7 @@ set -e
 imageName=$IMAGE_NAME
 ECR_URL=789252305933.dkr.ecr.cn-northwest-1.amazonaws.com.cn
 
-IMAGE_TAG="$PACKAGE_VERSION-$ARCH"
+IMAGE_TAG="$PACKAGE_VERSION"
 
 echo current package version: "$PACKAGE_VERSION"
 
