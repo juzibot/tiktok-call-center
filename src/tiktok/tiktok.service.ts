@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios, { AxiosInstance } from 'axios'
 import { AppConfig } from 'src/config/configuration'
+import { AvailableScopes } from 'src/constant'
 import { TokenRepoService } from 'src/data/token.repo'
 import { AccessTokenResponse } from 'src/model/tiktok'
 import { SECOND } from 'src/util/time'
@@ -56,5 +57,13 @@ export class TiktokService {
       redirect_uri: this.redirectUrl,
     })
     return result.data as AccessTokenResponse
+  }
+
+  generateLoginUrl(token: string) {
+    const appClientId = this.configService.get('appClientId', { infer: true })
+    const redirectUrl = this.configService.get('appRedirectUrl', {
+      infer: true,
+    })
+    return `https://www.tiktok.com/v2/auth/authorize?client_key=${appClientId}&scope=${AvailableScopes.join(',')}&response_type=code&redirect_uri=${redirectUrl}&state=${JSON.stringify({ token })}`
   }
 }
