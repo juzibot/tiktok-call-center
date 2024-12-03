@@ -1,13 +1,34 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { AppController } from './app.controller'
+import { AuthModule } from './auth/auth.module'
 import { AppConfig } from './config/configuration'
+import { DataModule } from './data/data.module'
+import { TiktokModule } from './tiktok/tiktok.module'
 
 @Module({
   imports: [
+    AuthModule,
+    DataModule,
+    TiktokModule,
     ConfigModule.forRoot({
       load: [() => AppConfig.instance],
       isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService): TypeOrmModuleOptions => {
+        return {
+          type: 'mongodb',
+          url: config.get<string>('mongoUri'),
+          database: 'tiktok_call_center',
+          entities: require('./data/entity'),
+          synchronize: true,
+          useUnifiedTopology: true,
+        }
+      },
     }),
   ],
   controllers: [AppController],
